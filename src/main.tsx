@@ -5,7 +5,6 @@ import { StartPage } from "./Pages/StartPage";
 import { UrlCollectionPage } from "./Pages/UrlCollectionPage";
 import { ChakraProvider } from "@chakra-ui/react";
 
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ChakraProvider>

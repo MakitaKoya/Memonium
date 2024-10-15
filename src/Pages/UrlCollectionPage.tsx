@@ -16,6 +16,7 @@ import React, {
 import { CreateNewUrlInfoModal } from "./components/CreateNewUrlInfoModal";
 import { DisplayUrlInfo } from "./components/DisplayUrlInfo";
 import { invoke } from "@tauri-apps/api/core";
+import "../Styles/UrlCollectionPageStyle.css";
 
 // Context
 export interface urlInfoContextType {
@@ -78,9 +79,6 @@ export const UrlCollectionPage: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  // Page Style CSS
-  const pageStyle = { padding: "10px 40px", background: "#f6f6f6" };
-
   // ページルーティング
   // const navigate = useNavigate();
   // const clickNextPage = () => {
@@ -103,7 +101,7 @@ export const UrlCollectionPage: React.FC = () => {
   };
 
   return (
-    <div style={pageStyle}>
+    <div className="container">
       <InfoContext.Provider value={{ infomations, setInfomations }}>
         <urlInfoContext.Provider value={{ urlInfo, setUrlInfo }}>
           <Heading size="xl">URLコレクション</Heading>
