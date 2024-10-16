@@ -40,7 +40,9 @@ export const DisplayUrlInfo: React.FC<UrlInfoProps> = ({
             position: "relative",
           }}
         >
-          <Heading size="md">{title}</Heading>
+          <Heading size="md" width="85%">
+            {title}
+          </Heading>
           <Stack
             direction="row"
             align="center"

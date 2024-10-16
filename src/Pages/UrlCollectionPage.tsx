@@ -16,7 +16,7 @@ import React, {
 import { CreateNewUrlInfoModal } from "./components/CreateNewUrlInfoModal";
 import { DisplayUrlInfo } from "./components/DisplayUrlInfo";
 import { invoke } from "@tauri-apps/api/core";
-import "../Styles/UrlCollectionPageStyle.css";
+import "../Styles/UrlCollectionPageStyles.css";
 
 // Context
 export interface urlInfoContextType {
