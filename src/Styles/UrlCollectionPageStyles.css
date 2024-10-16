@@ -1,0 +1,11 @@
+@import "./AppStyles.css";
+
+.container {
+  padding: 20px 40px;
+}
+
+.container::after {
+  content: "";
+  display: block;
+  height: 20px;
+}
