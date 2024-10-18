@@ -1,9 +1,11 @@
 import {
   Heading,
   Text,
-  Center,
   Divider,
   useDisclosure,
+  Card,
+  CardHeader,
+  CardBody,
 } from "@chakra-ui/react";
 import React, {
   createContext,
@@ -131,14 +133,16 @@ export const UrlCollectionPage: React.FC = () => {
               />
             ))
           ) : (
-            <Center>
-              <Text>
-                [ 緊急クエスト ]<br />
-                内容：右上の「追加」ボタンから検索結果を保存せよ。
-                <br />
-                報酬：10,000,000 z
-              </Text>
-            </Center>
+            <Card margin="10px 5px">
+              <CardHeader>
+                <Heading size="md">まだ何もありません</Heading>
+              </CardHeader>
+              <CardBody>
+                <Text pt="2" fontSize="sm">
+                  右上の「追加」ボタンから検索結果を保存してみよう！
+                </Text>
+              </CardBody>
+            </Card>
           )}
         </urlInfoContext.Provider>
       </InfoContext.Provider>

@@ -5,6 +5,7 @@ import {
   CardBody,
   CardHeader,
   Heading,
+  Link,
   Stack,
   StackDivider,
   Text,
@@ -63,7 +64,9 @@ export const DisplayUrlInfo: React.FC<UrlInfoProps> = ({
           <Box>
             <Heading size="xs">URL</Heading>
             <Text pt="2" fontSize="sm">
-              {url}
+              <Link color="#00A0A0" href={url} isExternal>
+                {url}
+              </Link>
             </Text>
           </Box>
           <Box>

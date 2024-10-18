@@ -1,6 +1,6 @@
 use std::fs;
 use serde::{Serialize,Deserialize};
-use tauri::{AppHandle,Manager};
+use tauri::{AppHandle, Manager};
 
 // データ型の定義
 #[derive(Serialize,Deserialize)]
@@ -34,6 +34,7 @@ fn load_data(app_handle:AppHandle) -> Result<Vec<UrlInfoContextType>,String>{
     Ok(data)
 }
 
+// jsonファイルを書き込む先のディレクトリを確認するための関数
 #[tauri::command]
 fn path_watch(app_handle:AppHandle) -> Result<(),String>{
     let path = app_handle.path().app_local_data_dir().unwrap();
@@ -41,12 +42,19 @@ fn path_watch(app_handle:AppHandle) -> Result<(),String>{
     Ok(())
 }
 
+// バージョン情報の取得をする関数
+#[tauri::command]
+fn get_version() -> Result<String,String>{
+    let version = env!("CARGO_PKG_VERSION").to_string();
+    Ok(version)
+}
+
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![path_watch,load_data,save_data])
+        .invoke_handler(tauri::generate_handler![path_watch,load_data,save_data,get_version])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
