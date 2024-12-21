@@ -6,6 +6,13 @@ import {
   Card,
   CardHeader,
   CardBody,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  Button,
 } from "@chakra-ui/react";
 import React, {
   createContext,
@@ -13,6 +20,7 @@ import React, {
   SetStateAction,
   useEffect,
   useState,
+  useRef,
 } from "react";
 // import { useNavigate } from "react-router-dom";
 import { CreateNewUrlInfoModal } from "./components/CreateNewUrlInfoModal";
@@ -77,9 +85,13 @@ export const UrlCollectionPage: React.FC = () => {
     }
   }, [infomations]);
 
-  // モーダルオプション
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // クリエイトモーダルオプション
+  const createCardModal = useDisclosure();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  // デリートモーダルオプション
+  const deleteCardModal = useDisclosure();
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const [deleteId, setDeleteId] = useState<number>(0);
 
   // ページルーティング
   // const navigate = useNavigate();
@@ -109,28 +121,33 @@ export const UrlCollectionPage: React.FC = () => {
           <Heading size="xl">URLコレクション</Heading>
           <Divider style={{ margin: "10px 0" }} />
           <CreateNewUrlInfoModal
-            isOpen={isOpen}
-            onOpen={onOpen}
+            isOpen={createCardModal.isOpen}
+            onOpen={createCardModal.onOpen}
             onClose={() => {
               setIsEdit(false);
-              onClose();
+              createCardModal.onClose();
             }}
             isEdit={isEdit}
           />
           {infomations.length !== 0 ? (
             infomations.map((info) => (
-              <DisplayUrlInfo
-                key={info.id}
-                title={info.title}
-                url={info.url}
-                date={info.date}
-                onDelete={() => deleteCard(info.id)}
-                onOpen={() => {
-                  urlInfoSetter(info.id);
-                  setIsEdit(!isEdit);
-                  onOpen();
-                }}
-              />
+              <>
+                <DisplayUrlInfo
+                  key={info.id}
+                  title={info.title}
+                  url={info.url}
+                  date={info.date}
+                  onDelete={() => {
+                    setDeleteId(info.id);
+                    deleteCardModal.onOpen();
+                  }}
+                  onOpen={() => {
+                    urlInfoSetter(info.id);
+                    setIsEdit(!isEdit);
+                    createCardModal.onOpen();
+                  }}
+                />
+              </>
             ))
           ) : (
             <Card margin="10px 5px">
@@ -144,6 +161,37 @@ export const UrlCollectionPage: React.FC = () => {
               </CardBody>
             </Card>
           )}
+          <AlertDialog
+            isOpen={deleteCardModal.isOpen}
+            leastDestructiveRef={cancelRef}
+            onClose={deleteCardModal.onClose}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader>警告</AlertDialogHeader>
+                <AlertDialogBody>
+                  完全に削除しますか？
+                  <br />
+                  この操作は元に戻すことができません。
+                </AlertDialogBody>
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={deleteCardModal.onClose}>
+                    キャンセル
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => {
+                      deleteCard(deleteId);
+                      deleteCardModal.onClose();
+                    }}
+                    ml={3}
+                  >
+                    削除
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
         </urlInfoContext.Provider>
       </InfoContext.Provider>
       {/* <Button onClick={clickNextPage}>Next Page</Button> */}
