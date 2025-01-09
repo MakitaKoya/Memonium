@@ -9,7 +9,6 @@ export const StartPage = () => {
 
   useEffect(() => {
     invoke<string>("get_version").then((data) => {
-      console.log(data);
       setVersion(data);
     });
   }, []);

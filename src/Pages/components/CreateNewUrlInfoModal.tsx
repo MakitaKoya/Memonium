@@ -65,7 +65,7 @@ export const CreateNewUrlInfoModal: React.FC<CreateModalProps> = ({
   const [url, setUrl] = useState<string>("");
   const [date, setDate] = useState<Date>(new Date());
   const urlInfo = useContext(urlInfoContext).urlInfo;
-  const { infomations, setInfomations } = useContext(InfoContext);
+  const { informations, setinformations } = useContext(InfoContext);
 
   // フォーム初期化
   useEffect(() => {
@@ -99,7 +99,7 @@ export const CreateNewUrlInfoModal: React.FC<CreateModalProps> = ({
       url,
       date,
     };
-    setInfomations([...infomations, newInfo]);
+    setinformations([...informations, newInfo]);
     onClose();
   };
 
@@ -110,8 +110,8 @@ export const CreateNewUrlInfoModal: React.FC<CreateModalProps> = ({
       url,
       date,
     };
-    setInfomations(
-      infomations.map((info) =>
+    setinformations(
+      informations.map((info) =>
         info.id === editInfo.id
           ? {
               ...info,

@@ -13,6 +13,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
+  Box,
 } from "@chakra-ui/react";
 import React, {
   createContext,
@@ -24,7 +25,8 @@ import React, {
 } from "react";
 // import { useNavigate } from "react-router-dom";
 import { CreateNewUrlInfoModal } from "./components/CreateNewUrlInfoModal";
-import { DisplayUrlInfo } from "./components/DisplayUrlInfo";
+import { UrlInfoCard } from "./components/UrlInfoCard";
+import { LoadingComponent } from "./components/LoadingComponent";
 import { invoke } from "@tauri-apps/api/core";
 import "../Styles/UrlCollectionPageStyles.css";
 
@@ -45,8 +47,8 @@ export const urlInfoContext = createContext(
 
 export const InfoContext = createContext(
   {} as {
-    infomations: urlInfoContextType[];
-    setInfomations: Dispatch<SetStateAction<urlInfoContextType[]>>;
+    informations: urlInfoContextType[];
+    setinformations: Dispatch<SetStateAction<urlInfoContextType[]>>;
   }
 );
 
@@ -59,7 +61,7 @@ export const UrlCollectionPage: React.FC = () => {
     date: new Date(),
   });
 
-  const [infomations, setInfomations] = useState<urlInfoContextType[]>([]);
+  const [informations, setinformations] = useState<urlInfoContextType[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -70,20 +72,21 @@ export const UrlCollectionPage: React.FC = () => {
         ...item,
         date: new Date(item.date),
       }));
-      setInfomations(parsedData);
+      setinformations(parsedData);
       setIsDataLoaded(true);
     });
   }, []);
 
+  // データをセーブ
   useEffect(() => {
     if (isDataLoaded) {
-      const stringifiedData = infomations.map((item) => ({
+      const stringifiedData = informations.map((item) => ({
         ...item,
         date: item.date.toISOString(),
       }));
       invoke("save_data", { data: stringifiedData });
     }
-  }, [infomations]);
+  }, [informations]);
 
   // クリエイトモーダルオプション
   const createCardModal = useDisclosure();
@@ -101,12 +104,12 @@ export const UrlCollectionPage: React.FC = () => {
 
   // カードの削除
   const deleteCard = (id: number) => {
-    setInfomations(infomations.filter((info) => info.id !== id));
+    setinformations(informations.filter((info) => info.id !== id));
   };
 
   // カード編集時の情報セット
   const urlInfoSetter = (id: number) => {
-    const info = infomations.find((item) => item.id === id);
+    const info = informations.find((item) => item.id === id);
     if (info) {
       setUrlInfo(info);
     } else {
@@ -114,9 +117,16 @@ export const UrlCollectionPage: React.FC = () => {
     }
   };
 
+  // Page Style CSS
+  const scrollBoxStyle = {
+    "&::-webkit-scrollbar": { display: "none" },
+    "-ms-overflow-style": "none", // Internet Explorer 10+
+    "scrollbar-width": "none", // Firefox
+  };
+
   return (
-    <div className="container">
-      <InfoContext.Provider value={{ infomations, setInfomations }}>
+    <Box className="container" overflow="hidden">
+      <InfoContext.Provider value={{ informations, setinformations }}>
         <urlInfoContext.Provider value={{ urlInfo, setUrlInfo }}>
           <Heading size="xl">URLコレクション</Heading>
           <Divider style={{ margin: "10px 0" }} />
@@ -129,38 +139,49 @@ export const UrlCollectionPage: React.FC = () => {
             }}
             isEdit={isEdit}
           />
-          {infomations.length !== 0 ? (
-            infomations.map((info) => (
-              <>
-                <DisplayUrlInfo
-                  key={info.id}
-                  title={info.title}
-                  url={info.url}
-                  date={info.date}
-                  onDelete={() => {
-                    setDeleteId(info.id);
-                    deleteCardModal.onOpen();
-                  }}
-                  onOpen={() => {
-                    urlInfoSetter(info.id);
-                    setIsEdit(!isEdit);
-                    createCardModal.onOpen();
-                  }}
-                />
-              </>
-            ))
-          ) : (
-            <Card margin="10px 5px">
-              <CardHeader>
-                <Heading size="md">まだ何もありません</Heading>
-              </CardHeader>
-              <CardBody>
-                <Text pt="2" fontSize="sm">
-                  右上の「追加」ボタンから検索結果を保存してみよう！
-                </Text>
-              </CardBody>
-            </Card>
-          )}
+          <Box
+            width="100%"
+            height="100%"
+            margin="10px 0px"
+            overflowY="scroll"
+            css={scrollBoxStyle}
+          >
+            {isDataLoaded ? (
+              informations.length !== 0 ? (
+                informations.map((info) => (
+                  <div key={info.id}>
+                    <UrlInfoCard
+                      title={info.title}
+                      url={info.url}
+                      date={info.date}
+                      onDelete={() => {
+                        setDeleteId(info.id);
+                        deleteCardModal.onOpen();
+                      }}
+                      onOpen={() => {
+                        urlInfoSetter(info.id);
+                        setIsEdit(!isEdit);
+                        createCardModal.onOpen();
+                      }}
+                    />
+                  </div>
+                ))
+              ) : (
+                <Card margin="10px 5px">
+                  <CardHeader>
+                    <Heading size="md">まだ何もありません</Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Text pt="2" fontSize="sm">
+                      右上の「追加」ボタンから検索結果を保存してみよう！
+                    </Text>
+                  </CardBody>
+                </Card>
+              )
+            ) : (
+              <LoadingComponent />
+            )}
+          </Box>
           <AlertDialog
             isOpen={deleteCardModal.isOpen}
             leastDestructiveRef={cancelRef}
@@ -195,6 +216,6 @@ export const UrlCollectionPage: React.FC = () => {
         </urlInfoContext.Provider>
       </InfoContext.Provider>
       {/* <Button onClick={clickNextPage}>Next Page</Button> */}
-    </div>
+    </Box>
   );
 };
