@@ -1,27 +1,10 @@
-import {
-  Heading,
-  Text,
-  Divider,
-  useDisclosure,
-  Card,
-  CardHeader,
-  CardBody,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  Button,
-  Box,
-} from "@chakra-ui/react";
+import { Heading, Divider, useDisclosure, Box } from "@chakra-ui/react";
 import React, {
   createContext,
   Dispatch,
   SetStateAction,
   useEffect,
   useState,
-  useRef,
 } from "react";
 // import { useNavigate } from "react-router-dom";
 import { CreateNewUrlInfoModal } from "./components/CreateNewUrlInfoModal";
@@ -29,6 +12,8 @@ import { UrlInfoCard } from "./components/UrlInfoCard";
 import { LoadingComponent } from "./components/LoadingComponent";
 import { invoke } from "@tauri-apps/api/core";
 import "../Styles/UrlCollectionPageStyles.css";
+import { InitInfoCard } from "./components/InitInfoCard";
+import { DeleteAlertDialog } from "./components/DeleteAlertDialog";
 
 // Context
 export interface urlInfoContextType {
@@ -93,7 +78,6 @@ export const UrlCollectionPage: React.FC = () => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   // デリートモーダルオプション
   const deleteCardModal = useDisclosure();
-  const cancelRef = useRef<HTMLButtonElement>(null);
   const [deleteId, setDeleteId] = useState<number>(0);
 
   // ページルーティング
@@ -117,13 +101,6 @@ export const UrlCollectionPage: React.FC = () => {
     }
   };
 
-  // Page Style CSS
-  const scrollBoxStyle = {
-    "&::-webkit-scrollbar": { display: "none" },
-    "-ms-overflow-style": "none", // Internet Explorer 10+
-    "scrollbar-width": "none", // Firefox
-  };
-
   return (
     <Box className="container" overflow="hidden">
       <InfoContext.Provider value={{ informations, setinformations }}>
@@ -140,11 +117,11 @@ export const UrlCollectionPage: React.FC = () => {
             isEdit={isEdit}
           />
           <Box
+            className="scrollBox"
             width="100%"
             height="100%"
             margin="10px 0px"
             overflowY="scroll"
-            css={scrollBoxStyle}
           >
             {isDataLoaded ? (
               informations.length !== 0 ? (
@@ -167,52 +144,22 @@ export const UrlCollectionPage: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <Card margin="10px 5px">
-                  <CardHeader>
-                    <Heading size="md">まだ何もありません</Heading>
-                  </CardHeader>
-                  <CardBody>
-                    <Text pt="2" fontSize="sm">
-                      右上の「追加」ボタンから検索結果を保存してみよう！
-                    </Text>
-                  </CardBody>
-                </Card>
+                <InitInfoCard />
               )
             ) : (
               <LoadingComponent />
             )}
           </Box>
-          <AlertDialog
+          <DeleteAlertDialog
             isOpen={deleteCardModal.isOpen}
-            leastDestructiveRef={cancelRef}
-            onClose={deleteCardModal.onClose}
-          >
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader>警告</AlertDialogHeader>
-                <AlertDialogBody>
-                  完全に削除しますか？
-                  <br />
-                  この操作は元に戻すことができません。
-                </AlertDialogBody>
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={deleteCardModal.onClose}>
-                    キャンセル
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={() => {
-                      deleteCard(deleteId);
-                      deleteCardModal.onClose();
-                    }}
-                    ml={3}
-                  >
-                    削除
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
+            onCloseCancel={() => {
+              deleteCardModal.onClose();
+            }}
+            onCloseDelete={() => {
+              deleteCard(deleteId);
+              deleteCardModal.onClose();
+            }}
+          />
         </urlInfoContext.Provider>
       </InfoContext.Provider>
       {/* <Button onClick={clickNextPage}>Next Page</Button> */}
