@@ -1,6 +1,6 @@
 [package]
 name = "memonium"
-version = "0.1.5"
+version = "0.1.6"
 description = "A Tauri App"
 authors = ["MakitaKoya<g2481454@tcu.ac.jp>"]
 edition = "2021"
