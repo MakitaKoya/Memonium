@@ -1,0 +1,15 @@
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+  <!-- 本の表紙 -->
+  <rect x="200" y="0" width="700" height="1000" rx="50" fill="#080e51"/>
+  <!-- 本の背表紙 -->
+  <polygon points="100,50 150,0 250,0 250,1000 150,1000 100,950" fill="#00fa9a"/>
+  <circle cx="150" cy="50" r="50" fill="#00fa9a"/>
+  <circle cx="150" cy="950" r="50" fill="#00fa9a"/>
+  <!-- エンブレム -->
+  <ellipse cx="575" cy="475" rx="150" ry="375" transform="rotate(45,575,475)" fill="transparent" stroke="#1ed4d8" stroke-width="50"/>
+  <ellipse cx="575" cy="475" rx="150" ry="375" transform="rotate(315,575,475)" fill="transparent" stroke="#1ed4d8" stroke-width="50"/>
+  <polygon points="825,275 575,875 325,275" fill="#00fa9a"/>
+  <polygon points="575,125 825,275 575,425 325,275" fill="#7fffd4"/>
+  <path d="M 575,100 A 150,375 0 0 1 575,850" transform="rotate(45,575,475)" fill="transparent" stroke="#1ed4d8" stroke-width="50"/>
+  <path d="M 575,100 A 150,375 0 0 0 575,850" transform="rotate(315,575,475)" fill="transparent" stroke="#1ed4d8" stroke-width="50"/>
+</svg>
